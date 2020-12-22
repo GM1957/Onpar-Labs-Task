@@ -15,6 +15,35 @@ router.get("/", async (req, res) => {
 // Getting one Employee
 router.get("/:employeeId", getEmployee, (req, res) => res.send(res.Employee));
 
+router.post("/bulkUpload", upload.array("files", 100), (req,res) => {
+  console.log('inside')
+  if (req.files) {
+    req.files.forEach( async function (file, index, arr) {
+      console.log("files from foreach", file);
+      let fileName = file.originalname.substring(
+        0,
+        file.originalname.indexOf(".")
+      );
+      await Employee.find({ employeeID: fileName })
+      .then(async (employee) => {
+        console.log('employee from then',employee);
+        if (employee != null) {
+          console.log('inside not nULL')
+          res.Employee = employee[0];
+          res.Employee.files = file.path;
+          console.log('inside not nULL')
+          await res.Employee.save().then((updatedEmployee) => res.json(updatedEmployee));
+        }
+        
+      })
+      .catch((err) =>
+        res
+          .status(500)
+          .json({ message: "internal server error", error: err.message })
+      );
+    });
+  }
+})
 // Creating one Employee
 router.post("/", upload.array("files", 100), getAdmin, async (req, res) => {
   if (res.Admin[0].isAdmin) {
@@ -27,7 +56,7 @@ router.post("/", upload.array("files", 100), getAdmin, async (req, res) => {
     });
 
     if (req.files) {
-      let path = [];
+      let path = "";
       req.files.forEach(function (files, index, arr) {
         console.log("files from foreach", files);
         let fileName = files.originalname.substring(
@@ -35,9 +64,10 @@ router.post("/", upload.array("files", 100), getAdmin, async (req, res) => {
           files.originalname.indexOf(".")
         );
         if (fileName === req.body.employeeID) {
-          path.append(files.path)
+          path = path + files.path
         }
       });
+      path = path.substr(0,path.length-1)
       console.log("this is file path", path);
       employee.files = path;
     }
@@ -63,7 +93,7 @@ router.patch(
         if (req.body.phone) res.Employee.phone = req.body.phone;
         if (req.body.email) res.Employee.email = req.body.email;
         if (req.files) {
-          let path = [];
+          let path = "";
           req.files.forEach(function (files, index, arr) {
             console.log("files from foreach", files);
             let fileName = files.originalname.substring(
@@ -71,9 +101,10 @@ router.patch(
               files.originalname.indexOf(".")
             );
             if (fileName === req.body.employeeID) {
-              path.append(files.path)
+              path = path + files.path
             }
           });
+          path = path.substr(0,path.length-1)
           console.log("this is file path", path);
           res.Employee.files = path;
         }

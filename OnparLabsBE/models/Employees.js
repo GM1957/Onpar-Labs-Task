@@ -24,7 +24,7 @@ const EmployeeSchema = new mongoose.Schema({
         type: String
     },
     files: {
-        type: Array
+        type: String
     },
     isEmployee: {
         type: Boolean,

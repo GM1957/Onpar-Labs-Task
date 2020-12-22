@@ -5,6 +5,9 @@ GET http://localhost:3001/Employees
 GET http://localhost:3001/Employees/E-0001
 
 
+PATCH http://localhost:3001/Employees/bulkUpload
+
+
 ###
 
 DELETE http://localhost:3001/Employees/E-0001
