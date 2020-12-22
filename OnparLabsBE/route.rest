@@ -1,0 +1,70 @@
+GET http://localhost:3001/Employees
+
+###
+
+GET http://localhost:3001/Employees/E-0001
+
+
+###
+
+DELETE http://localhost:3001/Employees/E-0001
+Content-Type: application/json
+
+{
+    "adminID": "A123"
+}
+
+### 
+
+POST http://localhost:3001/Employees
+Content-Type: application/json
+
+{
+    "employeeID": "E-1234",
+    "name": "employee tanmoy",
+    "adminID": "A123"
+}
+
+### 
+
+patch http://localhost:3001/Employees/5fdfddb7bcd321279b44e6ef
+Content-Type: application/json
+
+{
+    "name": "tanmoy bhowmick",
+    "adminID": "admin1010"
+}
+
+# ***************///////////////////   admin section   /////////////////////***************
+
+###
+
+GET http://localhost:3001/Admins
+
+###
+
+GET http://localhost:3001/Admins/A123
+
+
+###
+
+DELETE http://localhost:3001/Admins/T123
+
+### 
+
+POST http://localhost:3001/Admins
+Content-Type: application/json
+
+{
+    "name": "tanmoy admin",
+    "adminID": "admin T-123"
+}
+
+### 
+
+patch http://localhost:3001/Admins/5fdfddb7bcd321279b44e6ef
+Content-Type: application/json
+
+{
+    "name": "tanmoy bhowmick"
+}
