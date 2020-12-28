@@ -1,7 +1,7 @@
 const path = require('path')
 const multer = require('multer')
 
-var storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: function(req,file,callback){
         callback(null,'./uploads/')
     },
@@ -11,7 +11,7 @@ var storage = multer.diskStorage({
     }
 })
 
-var upload = multer ({
+const upload = multer ({
     storage: storage
 })
 

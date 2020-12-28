@@ -15,7 +15,7 @@ router.get("/", async (req, res) => {
 // Getting one Employee
 router.get("/:employeeId", getEmployee, (req, res) => res.send(res.Employee));
 
-router.post("/bulkUpload", upload.array("files", 100), (req,res) => {
+router.post("/bulkUpload", upload.array("files", 100), async (req,res) => {
   console.log('inside')
   if (req.files) {
     req.files.forEach( async function (file, index, arr) {
@@ -24,26 +24,61 @@ router.post("/bulkUpload", upload.array("files", 100), (req,res) => {
         0,
         file.originalname.indexOf(".")
       );
-      await Employee.find({ employeeID: fileName })
-      .then(async (employee) => {
+      const  employee = await Employee.find({ employeeID: fileName })
+      try {
+      if(employee){
         console.log('employee from then',employee);
         if (employee != null) {
           console.log('inside not nULL')
           res.Employee = employee[0];
           res.Employee.files = file.path;
           console.log('inside not nULL')
-          await res.Employee.save().then((updatedEmployee) => res.json(updatedEmployee));
+          const updatedEmployee = await res.Employee.save();
+          res.json(updatedEmployee);
         }
-        
-      })
-      .catch((err) =>
+      }
+    }
+    catch(err){
         res
           .status(500)
           .json({ message: "internal server error", error: err.message })
-      );
+    };
+      
     });
   }
 })
+
+
+// router.post("/bulkUpload", upload.array("files", 100), (req,res) => {
+//   console.log('inside')
+//   if (req.files) {
+//     req.files.forEach( async function (file, index, arr) {
+//       console.log("files from foreach", file);
+//       let fileName = file.originalname.substring(
+//         0,
+//         file.originalname.indexOf(".")
+//       );
+//       await Employee.find({ employeeID: fileName })
+//       .then(async (employee) => {
+//         console.log('employee from then',employee);
+//         if (employee != null) {
+//           console.log('inside not nULL')
+//           res.Employee = employee[0];
+//           res.Employee.files = file.path;
+//           console.log('inside not nULL')
+//           await res.Employee.save().then((updatedEmployee) => res.json(updatedEmployee));
+//         }
+        
+//       })
+//       .catch((err) =>
+//         res
+//           .status(500)
+//           .json({ message: "internal server error", error: err.message })
+//       );
+//     });
+//   }
+// })
+
 // Creating one Employee
 router.post("/", upload.array("files", 100), getAdmin, async (req, res) => {
   if (res.Admin[0].isAdmin) {
